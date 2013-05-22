@@ -1,3 +1,4 @@
+!!! 5
 html
 	head
 		title CS strategy page
@@ -14,8 +15,10 @@ html
 				img#smoke-icon.tool(onclick="handleClick('smoke')", src="imgs/tools/smoke.jpeg")
 				img#hand-id.tool(onclick="handleClick('hand')", src="imgs/tools/hand.jpeg")
 				img#brush-id.tool(onclick="handleClick('brush')", src="imgs/tools/paintbrush.jpeg")
-				input#comid(type='text', name='namegetter', placeholder='enter steam community name')
+				input#comid(type='text', name='namegetter', placeholder='Steam ID')
 				button#bComid.nohighlight(onclick='steamInfo()')
 					|Get Info
 				div#playerlist.toolbox
 		div#map(style="background-image: url('#{imgurl}')")
+			div#playerListWrapper
+				div#playerList

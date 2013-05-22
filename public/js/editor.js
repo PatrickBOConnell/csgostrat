@@ -2,6 +2,8 @@
 
 var shapehash = {};
 
+
+
 $(document).ready(function(){
 	var toolhidden = false;
 	var socket = io.connect(window.location.hostname, {reconnect: false});
@@ -17,7 +19,8 @@ $(document).ready(function(){
 	  dialogClass: "nohighlight",
 	  resizable: false,
 	  draggable: true,
-	  width: 215
+	  width: 215,
+	  position: {at: 'right', of: '#map'}
 	});
 	
 	
@@ -26,7 +29,7 @@ $(document).ready(function(){
 		$(".playercheck").remove();
 	});
 	var stage = new Kinetic.Stage({
-		container: map,
+		container: 'map',
 		width: 1024,
 		height: 1024
 	});
@@ -52,6 +55,14 @@ $(document).ready(function(){
 			e.preventDefault();
 			socket.emit('request drawings');
 		}
+	});
+	$(document).keydown(function(e) {
+		if (e.which == 49)
+			handleClick('smoke');
+		else if (e.which == 50)
+			handleClick('hand');
+		else if (e.which == 51)
+			handleClick('brush');
 	});
 	$('#comid').keydown(function(e) {
 		if(e.keyCode === 13) {
@@ -196,16 +207,19 @@ $(document).ready(function(){
 			case 'hand':
 				$('#map').css('cursor', 'pointer');
 				$('#hand-id').css('border', '2px solid ' + color);
+				$('#hand-id').css('margin', '2.5px');
 				displayLayer.moveToTop();
 				break;
 			case 'brush':
 				$('#map').css('cursor', 'none');
 				$('#brush-id').css('border', '2px solid ' + color);
+				$('#brush-id').css('margin', '2.5px');
 				clickLayer.moveToTop();
 				break;
 			case 'smoke':
 				$('#map').css('cursor', 'none');
 				$('#smoke-icon').css('border', '2px solid ' + color);
+				$('#smoke-icon').css('margin', '2.5px');
 				clickLayer.moveToTop();
 				break;
 			default:
@@ -300,10 +314,10 @@ $(document).ready(function(){
 		stage.draw();
 	});
 	socket.on('player change', function(data) {
-		$('#playerlist').empty();
+		$('#playerList').empty();
 		for(var i=0; i<data.players.length; i++) {
 			console.log(data.players[i].img);
-			$('#playerlist').append('<img class="tool" src="' + data.players[i].img + '" /> <span style="color:'+data.players[i].color+';">' + data.players[i].name + '</span><br/>');
+			$('#playerList').append('<img class="tool" src="' + data.players[i].img + '" /><br /><span style="color:'+data.players[i].color+';">' + data.players[i].name + '</span><br/>');
 		}
 		if(data.type === 'disconnect') {
 			shapehash[data.dcid].remove();
@@ -455,6 +469,9 @@ $(document).ready(function(){
 		$('#hand-id').css('border', 'none');
 		$('#smoke-icon').css('border', 'none');
 		$('#brush-id').css('border', 'none');
+		$('#hand-id').css('margin', '4.5px');
+		$('#smoke-icon').css('margin', '4.5px');
+		$('#brush-id').css('margin', '4.5px');
 	}
 	steamInfo = function() {
 		var name = $('#comid').val();

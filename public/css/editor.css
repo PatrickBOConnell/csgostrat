@@ -1,0 +1,89 @@
+html { 
+        background: url('http://hdwallpapersbase.com/wp-content/uploads/2012/10/CS_Counter-Strike-Source_Wallpaper__by_GnuHest.jpg') no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+}
+
+canvas {
+  outline: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+}
+
+#toolbox {
+	background-color: gray;
+	height: 350;
+	width: 250;
+	border: 4px solid black;
+	border-radius: 10px;
+}
+
+#greatertool {
+	position: fixed;
+	z-index: 100;
+	# margin-top: 150;
+	# float: left;
+	vertical-align: middle;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#playerlist {
+	margin-top: 40;
+}
+
+#map {
+	background-image: url('imgs/de_dust2_radar_spectate_default.png');
+	background-size: 100%;
+	width: 1024;
+	height: 1024;
+	border: 4px solid black;
+	border-radius: 10px;
+	# float: left;
+	margin: 0 auto;
+	vertical-align: middle;
+	position: inherit;
+	cursor: pointer;
+	z-index: 50;
+}
+
+#smoke-icon {
+	height: 50;
+	width: 50;
+}
+
+#hand-id{
+	height: 50;
+	width: 50;
+}
+
+#comid {
+	width: 175;
+	margin-left: 0;
+	background-color: lightgrey;
+	color: #666666;
+}
+
+.smoke {
+	height: 100;
+	width: 100;
+}
+
+.icon {
+	border: 4px solid red;
+}
+
+.tool{
+	height: 50;
+	width: 50;
+	margin: 2.5;
+}
+
+.nohighlight {
+	-webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

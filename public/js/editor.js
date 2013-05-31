@@ -5,6 +5,9 @@ var shapehash = {};
 
 
 $(document).ready(function(){
+	
+	$('#pageLink').val(window.location.href);
+	
 	var toolhidden = false;
 	var socket = io.connect(window.location.hostname, {reconnect: false});
 	var URL = document.URL;

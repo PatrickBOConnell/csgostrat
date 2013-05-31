@@ -19,7 +19,7 @@ $(document).ready(function(){
 	  dialogClass: "nohighlight",
 	  resizable: false,
 	  draggable: true,
-	  width: 215,
+	  width: 225,
 	  position: {at: 'right', of: '#map'}
 	});
 	

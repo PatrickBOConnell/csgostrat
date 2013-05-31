@@ -27,7 +27,7 @@ canvas {
 #toolbox {
 	background-color: gray;
 	height: 350;
-	width: 250;
+	width: 350;
 	border: 4px solid black;
 	border-radius: 10px;
 }
@@ -62,13 +62,13 @@ canvas {
 }
 
 #smoke-icon {
-	max-height: 50px;
-	max-width: 50px;
+	height: 50px;
+	width: 50px;
 }
 
 #hand-id{
-	max-height: 50px;
-	max-width: 50;
+	height: 50px;
+	width: 50;
 }
 
 #comid {
@@ -79,8 +79,8 @@ canvas {
 }
 
 .smoke {
-	max-height: 100px;
-	max-width: 100px;
+	height: 100px;
+	width: 100px;
 }
 
 .icon {
@@ -88,9 +88,9 @@ canvas {
 }
 
 .tool{
-	max-height: 50px;
-	max-width: 50px;
-	margin: 2.5px;
+	height: 50px;
+	width: 50px;
+	margin: 1px;
 }
 
 .nohighlight {

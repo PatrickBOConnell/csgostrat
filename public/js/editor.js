@@ -8,6 +8,11 @@ $(document).ready(function(){
 	
 	$('#pageLink').val(window.location.href);
 	
+	$("#pageLink").click(function(){
+		// Select input field contents
+		this.select();
+	});
+	
 	var toolhidden = false;
 	var socket = io.connect(window.location.hostname, {reconnect: false});
 	var URL = document.URL;

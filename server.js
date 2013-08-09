@@ -244,7 +244,7 @@ io.on('connection', function(socket) {
 		socket.get('room', function(err, room) {
 			var http = require('http');
 			var options = {
-				hostname: 'http://steamcommunity.com/id/',
+				hostname: 'www.steamcommunity.com/id/',
 				port: 80,
 				path: '/' + data,
 				method: 'GET'

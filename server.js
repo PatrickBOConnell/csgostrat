@@ -243,7 +243,13 @@ io.on('connection', function(socket) {
 		console.log('got into steam info befoer html');
 		socket.get('room', function(err, room) {
 			var http = require('http');
-			http.get('http://steamcommunity.com/id/' + data, function(resp){
+			var options = {
+				hostname: 'http://steamcommunity.com/id/',
+				port: 80,
+				path: '/' + data,
+				method: 'GET'
+			};
+			var req = http.get(options, function(resp){
 				console.log('got into steam info during html');
 				var html = '';
 				resp.on('data', function(chunk) {
@@ -268,6 +274,12 @@ io.on('connection', function(socket) {
 					}
 				});
 			});
+			
+			req.on('error', function(e) {
+				console.log('error: ' + e.message);
+			});
+			
+			req.end();
 		});
 	});
 	socket.on('request drawings', function(data) {

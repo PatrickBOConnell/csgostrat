@@ -5,7 +5,7 @@ var express = require('express'),
 	path = require('path');
 
 
-var port = process.env.PORT || 80;	
+var port = process.env.PORT || 8080;	
 server.listen(port);
 
 /* io.configure(function () { 

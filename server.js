@@ -5,7 +5,7 @@ var express = require('express'),
 	path = require('path');
 
 
-var port = process.env.PORT || 8080;	
+var port = process.env.PORT || 80;	
 server.listen(port);
 
 /* io.configure(function () { 
@@ -132,7 +132,9 @@ io.on('connection', function(socket) {
 		rooms[data.room].players.push(player);
 		var crypto = require('crypto')
 			, shasum = crypto.createHash('sha1');
-		shasum.update(data.room + player.name + player.img + player.num);
+		var timestamp = (new Date).getTime();
+		console.log('timestamp is: ' + timestamp);
+		shasum.update(data.room + player.name + player.img + player.num + timestamp);
 		var locid = shasum.digest('hex');
 		console.log('LOCID IS: ' + locid);
 		rooms[data.room].shapes[locid] = new Shape(locid, 'player', 200, 200);

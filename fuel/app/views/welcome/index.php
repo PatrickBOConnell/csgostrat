@@ -19,7 +19,7 @@
 		<div class="row" id="allContent">
 		<br>
 		<h1>CS Strategy Builder v1.0</h1>
-		<div class="well">
+		<div class="alert alert-info">
 			<div id='mainTitle'>Choose a map</div>
 				<div id='mainContent'>
 					<div class="form-group">
@@ -32,7 +32,7 @@
 								<option value="vertigo">Vertigo</option>
 							</select>
 							<br>
-							<input class="btn btn-info" type="submit">
+							<input class="btn btn-success" type="submit">
 						</form>
 					</div>
 				</div>
@@ -41,22 +41,18 @@
 	</body>
 		<footer>
 			<div id='allContent'>
-				<div class="row">
-					<div class="col-lg-2">
-					<p class="text-primary">Developed by: evilduky666</p>
-					</div>
+				<div class="row alert">
 					<div class="col-lg-6">
-						<p class="text-muted">Page rendered in {exec_time}s using {mem_usage}mb of memory.</p>
+					<div class="text-primary">Developed by: evilduky666<br><div class="text-muted">Rendered in {exec_time}s using {mem_usage}mb of memory.</div></div>
 					</div>
-				<div class="text-right">
+				<div class="text-right col-lg-6">
 					<a  href="http://www.w3.org/html/logo/">
 					<img src="http://www.w3.org/html/logo/badge/html5-badge-h-solo.png" width="63" height="64" alt="HTML5 Powered" title="HTML5 Powered">
 					</a>
 					<a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US">
 					<img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" />
 					</a>
-					<br />Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US">Creative Commons Attribution 3.0 Unported License</a>.
-				</div>
+								</div>
 			</div>
 		  </div>
 		</footer>

@@ -20,6 +20,10 @@ var express = require('express'),
 	io = require('socket.io').listen(server),
 	path = require('path');
 	
+process.on('uncaughtException', function(err) {
+	console.log('uncaught exception: ' + err);
+})
+	
 	
 
 

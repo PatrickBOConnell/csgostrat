@@ -134,37 +134,42 @@ function Room(name) {
 
 io.on('connection', function(socket) {
 	socket.on('info', function(data){
-		console.log('got here');
-		if(rooms[data.room] === undefined) {
-			console.log('BAD ROOM!');
-			socket.disconnect();
-			return;
+		try{
+			console.log('got here');
+			if(rooms[data.room] === undefined) {
+				console.log('BAD ROOM!');
+				socket.disconnect();
+				return;
+			}
+			//if(rooms[data.room] === undefined) rooms[data.room] = new Room(data.room);
+			var pnum = rooms[data.room].players.length;
+			var tmpname = 'player ' + pnum;
+			var player = new Player(tmpname, pnum, 'http://upload.wikimedia.org/wikipedia/en/a/af/Question_mark.png');
+			if(rooms[data.room].colors.length > 0)
+				player.color = rooms[data.room].colors.pop();
+			else player.color = "#FF0000";
+			rooms[data.room].players.push(player);
+			var crypto = require('crypto')
+				, shasum = crypto.createHash('sha1');
+			var timestamp = (new Date).getTime();
+			console.log('timestamp is: ' + timestamp);
+			shasum.update(data.room + player.name + player.img + player.num + timestamp);
+			var locid = shasum.digest('hex');
+			console.log('LOCID IS: ' + locid);
+			rooms[data.room].shapes[locid] = new Shape(locid, 'player', 200, 200);
+			rooms[data.room].shapes[locid].img = player.img;
+			player.imgid = locid;
+			socket.emit('pinfo', player);
+			socket.emit('all players', rooms[data.room].players);
+			socket.emit('all shapes', rooms[data.room].getShapes());
+			socket.join(data.room);
+			io.sockets.in(data.room).emit('player change', {type: 'new', players: rooms[data.room].players, newPlayer: player});
+			socket.set('room', {room: data.room, player: player}, function(){});
+			socket.broadcast.to(data.room).emit('new shape', rooms[data.room].shapes[locid]);
 		}
-		//if(rooms[data.room] === undefined) rooms[data.room] = new Room(data.room);
-		var pnum = rooms[data.room].players.length;
-		var tmpname = 'player ' + pnum;
-		var player = new Player(tmpname, pnum, 'http://upload.wikimedia.org/wikipedia/en/a/af/Question_mark.png');
-		if(rooms[data.room].colors.length > 0)
-			player.color = rooms[data.room].colors.pop();
-		else player.color = "#FF0000";
-		rooms[data.room].players.push(player);
-		var crypto = require('crypto')
-			, shasum = crypto.createHash('sha1');
-		var timestamp = (new Date).getTime();
-		console.log('timestamp is: ' + timestamp);
-		shasum.update(data.room + player.name + player.img + player.num + timestamp);
-		var locid = shasum.digest('hex');
-		console.log('LOCID IS: ' + locid);
-		rooms[data.room].shapes[locid] = new Shape(locid, 'player', 200, 200);
-		rooms[data.room].shapes[locid].img = player.img;
-		player.imgid = locid;
-		socket.emit('pinfo', player);
-		socket.emit('all players', rooms[data.room].players);
-		socket.emit('all shapes', rooms[data.room].getShapes());
-		socket.join(data.room);
-		io.sockets.in(data.room).emit('player change', {type: 'new', players: rooms[data.room].players, newPlayer: player});
-		socket.set('room', {room: data.room, player: player}, function(){});
-		socket.broadcast.to(data.room).emit('new shape', rooms[data.room].shapes[locid]);
+		catch(err) {
+			console.log('error in info: ' + err);
+		}
 	});
 	socket.on('disconnect', function(data){
 		try{

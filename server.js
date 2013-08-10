@@ -1,4 +1,3 @@
-
 /*
 This file is part of CSGO Drawing Board.
 
@@ -168,95 +167,125 @@ io.on('connection', function(socket) {
 		socket.broadcast.to(data.room).emit('new shape', rooms[data.room].shapes[locid]);
 	});
 	socket.on('disconnect', function(data){
-		socket.get('room', function(err, room) {
-			if(room === undefined || room === null) {
-				console.log('disconnecting bad request...');
-				return;
-			}
-			for(var i=0; i<room.player.drawings.length; i++) {
-				delete rooms[room.room].shapes[room.player.drawings[i]];
-				io.sockets.in(room.room).emit('remove shape', room.player.drawings[i]);
-			}
-			io.sockets.in(room.room).emit('remove shape', room.player.imgid);
-			delete rooms[room.room].shapes[room.player.imgid];
-			rooms[room.room].colors.push(room.player.color);
-			var index = room.player.num;
-			rooms[room.room].players.splice(index,1);
-			if(rooms[room.room].players.length < 1) {
-				console.log('deleteing room: ' + room.room);
-				delete rooms[room.room];
-				return;
-			}
-			for(var i=index; i<rooms[room.room].players.length; i++){
-				rooms[room.room].players[i].num--;
-			}
-			io.sockets.in(room.room).emit('player change', {type: 'disconnect', players: rooms[room.room].players, dcid: room.player.imgid});
-		});
+		try{
+			socket.get('room', function(err, room) {
+				if(room === undefined || room === null) {
+					console.log('disconnecting bad request...');
+					return;
+				}
+				for(var i=0; i<room.player.drawings.length; i++) {
+					delete rooms[room.room].shapes[room.player.drawings[i]];
+					io.sockets.in(room.room).emit('remove shape', room.player.drawings[i]);
+				}
+				io.sockets.in(room.room).emit('remove shape', room.player.imgid);
+				delete rooms[room.room].shapes[room.player.imgid];
+				rooms[room.room].colors.push(room.player.color);
+				var index = room.player.num;
+				rooms[room.room].players.splice(index,1);
+				if(rooms[room.room].players.length < 1) {
+					console.log('deleteing room: ' + room.room);
+					delete rooms[room.room];
+					return;
+				}
+				for(var i=index; i<rooms[room.room].players.length; i++){
+					rooms[room.room].players[i].num--;
+				}
+				io.sockets.in(room.room).emit('player change', {type: 'disconnect', players: rooms[room.room].players, dcid: room.player.imgid});
+			});
+		}
+		catch(err) {
+			console.log('error in disconnect: ' + err);
+		}
 	});
 	socket.on('draw', function(data){
 		if(data === null || data === undefined) return;
-		socket.get('room', function(err, room) {
-			var i=0;
-			do {
-				var crypto = require('crypto')
-					, shasum = crypto.createHash('sha1');
-				if(room === null) return;
-				shasum.update(data.type + data.xPos + data.yPos + data.points + i);
-				var locid = shasum.digest('hex');
-				console.log(locid);
-				i++;
-			}
-			while(rooms[room.room].shapes[locid] !== undefined);
-			rooms[room.room].shapes[locid] = new Shape(locid, data.type, data.xPos, data.yPos, data.points);
-			rooms[room.room].shapes[locid].color = room.player.color;
-			if(data.type === 'brush'){ 
-				rooms[room.room].players[room.player.num].drawings.push(locid);
-				console.log("drawings are: " + rooms[room.room].players[room.player.num].drawings);
-			}
-			io.sockets.in(room.room).emit('new shape', rooms[room.room].shapes[locid]);
-		});
+		try{
+			socket.get('room', function(err, room) {
+				var i=0;
+				do {
+					var crypto = require('crypto')
+						, shasum = crypto.createHash('sha1');
+					if(room === null) return;
+					shasum.update(data.type + data.xPos + data.yPos + data.points + i);
+					var locid = shasum.digest('hex');
+					console.log(locid);
+					i++;
+				}
+				while(rooms[room.room].shapes[locid] !== undefined);
+				rooms[room.room].shapes[locid] = new Shape(locid, data.type, data.xPos, data.yPos, data.points);
+				rooms[room.room].shapes[locid].color = room.player.color;
+				if(data.type === 'brush'){ 
+					rooms[room.room].players[room.player.num].drawings.push(locid);
+					console.log("drawings are: " + rooms[room.room].players[room.player.num].drawings);
+				}
+				io.sockets.in(room.room).emit('new shape', rooms[room.room].shapes[locid]);
+			});
+		}
+		catch(err) {
+			console.log('error in draw: ' + err);
+		}
 	});
 	socket.on('taking control', function(data) {
 		console.log('got into taking control');
-		socket.get('room', function(err, room) {
-			if (data === null || data === undefined || rooms[room.room].shapes[data] === undefined) return;
-			console.log('data is: ' + data);
-			if(rooms[room.room].shapes[data].user === 'none' ||
-				rooms[room.room].shapes[data].user === socket) {
-					rooms[room.room].shapesBeingUsed = true;
-					rooms[room.room].shapes[data].user = socket;
-					socket.broadcast.to(room.room).emit('being used', data);
-			}
-		});
+		try{
+			socket.get('room', function(err, room) {
+				if (data === null || data === undefined || rooms[room.room].shapes[data] === undefined) return;
+				console.log('data is: ' + data);
+				if(rooms[room.room].shapes[data].user === 'none' ||
+					rooms[room.room].shapes[data].user === socket) {
+						rooms[room.room].shapesBeingUsed = true;
+						rooms[room.room].shapes[data].user = socket;
+						socket.broadcast.to(room.room).emit('being used', data);
+				}
+			});
+		}
+		catch(err) {
+			console.log('error in taking control: ' + err);
+		}
 	});
 	socket.on('relinquish control', function(data) {
 		if(data === null || data === undefined) return;
-		socket.get('room', function(err, room) {
-			rooms[room.room].shapes[data].user = 'none';
-			rooms[room.room].shapesBeingUsed = false;
-			io.sockets.in(room.room).emit('not used', {shape: data, color: room.player.color});
-		});
+		try{
+			socket.get('room', function(err, room) {
+				rooms[room.room].shapes[data].user = 'none';
+				rooms[room.room].shapesBeingUsed = false;
+				io.sockets.in(room.room).emit('not used', {shape: data, color: room.player.color});
+			});
+		}
+		catch(err) {
+			console.log('error in relinquish control: ' + err);
+		}
 	});
 	socket.on('move obj', function(data) {
 		if(data === null || data === undefined) return;
-		socket.get('room', function(err, room) {
-			console.log('got into here');
-			if(rooms[room.room].shapes[data.id] === null || rooms[room.room].shapes[data.id] === undefined) return;
-			if(rooms[room.room].shapes[data.id].user === socket) {
-				console.log('also, correct user');
-				rooms[room.room].getShapes()[data.id].setX(data.xPos);
-				rooms[room.room].getShapes()[data.id].setY(data.yPos);
-				socket.broadcast.to(room.room).emit('shape move', {id: data.id, xPos: data.xPos, yPos: data.yPos});
-			}
-		});
+		try{
+			socket.get('room', function(err, room) {
+				console.log('got into here');
+				if(rooms[room.room].shapes[data.id] === null || rooms[room.room].shapes[data.id] === undefined) return;
+				if(rooms[room.room].shapes[data.id].user === socket) {
+					console.log('also, correct user');
+					rooms[room.room].getShapes()[data.id].setX(data.xPos);
+					rooms[room.room].getShapes()[data.id].setY(data.yPos);
+					socket.broadcast.to(room.room).emit('shape move', {id: data.id, xPos: data.xPos, yPos: data.yPos});
+				}
+			});
+		}
+		catch(err) {
+			console.log('error in move obj: ' + err);
+		}
 	});
 	socket.on('remove elm', function(data) {
 		if(data === null || data === undefined) return;
-		socket.get('room', function(err, room){
-			delete rooms[room.room].shapes[data];
-			rooms[room.room].players[room.player.num].drawings.splice(rooms[room.room].players[room.player.num].drawings.indexOf(data), 1);
-			io.sockets.in(room.room).emit('remove shape', data);
-		});
+		try{
+			socket.get('room', function(err, room){
+				delete rooms[room.room].shapes[data];
+				rooms[room.room].players[room.player.num].drawings.splice(rooms[room.room].players[room.player.num].drawings.indexOf(data), 1);
+				io.sockets.in(room.room).emit('remove shape', data);
+			});
+		}
+		catch(err) {
+			console.log('error in remove elm: ' + err);
+		}
 	});
 	socket.on('steam info', function(data) {
 		console.log('got into steam info befoer html');
@@ -307,8 +336,13 @@ io.on('connection', function(socket) {
 		});
 	});
 	socket.on('request drawings', function(data) {
-		socket.get('room', function(err, room) {
-			socket.emit('player drawings', room.player.drawings);
-		});
+		try{
+			socket.get('room', function(err, room) {
+				socket.emit('player drawings', room.player.drawings);
+			});
+		}
+		catch(err) {
+			console.log('error in request drawings: ' + err);
+		}
 	});
 });

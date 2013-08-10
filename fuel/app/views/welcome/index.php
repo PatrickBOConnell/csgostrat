@@ -30,6 +30,7 @@
 			</div>
 		</div>
 		<p class="text-primary">Developed by: evilduky666</p>
+		<p class="text-muted">Page rendered in {exec_time}s using {mem_usage}mb of memory.</p>
 </div>
 		</body>
 </html>

@@ -243,43 +243,48 @@ io.on('connection', function(socket) {
 		console.log('got into steam info befoer html');
 		socket.get('room', function(err, room) {
 			var http = require('http');
-			var options = {
-				hostname: 'steamcommunity.com',
-				port: 80,
-				path: '/id/' + data,
-				method: 'GET'
-			};
-			var req = http.request(options, function(resp){
-				console.log('got into steam info during html');
-				var html = '';
-				resp.on('data', function(chunk) {
-					html += chunk;
+			try {
+				var options = {
+					hostname: 'steamcommunity.com',
+					port: 80,
+					path: '/id/' + data,
+					method: 'GET'
+				};
+				var req = http.request(options, function(resp){
+					console.log('got into steam info during html');
+					var html = '';
+					resp.on('data', function(chunk) {
+						html += chunk;
+					});
+					resp.on('end', function(){
+						console.log('got into steam info after html');
+						var imgregex = new RegExp("img src=\"(.*\_full.jpg)");
+						var execs = imgregex.exec(html);
+						if(execs === null) {
+							console.log('bad login: ' + data);
+							socket.emit('bad login');
+							return;
+						}
+						else {
+							var imgurl = imgregex.exec(html)[1];
+							rooms[room.room].players[room.player.num].name = data;
+							rooms[room.room].players[room.player.num].img = imgurl;
+							rooms[room.room].shapes[room.player.imgid].img = imgurl;
+							io.sockets.in(room.room).emit('player change', {type: 'change', players: rooms[room.room].players});
+							io.sockets.in(room.room).emit('shape move', {type: 'image change', img: imgurl, id: rooms[room.room].players[room.player.num].imgid});
+						}
+					});
 				});
-				resp.on('end', function(){
-					console.log('got into steam info after html');
-					var imgregex = new RegExp("img src=\"(.*\_full.jpg)");
-					var execs = imgregex.exec(html);
-					if(execs === null) {
-						console.log('bad login: ' + data);
-						socket.emit('bad login');
-						return;
-					}
-					else {
-						var imgurl = imgregex.exec(html)[1];
-						rooms[room.room].players[room.player.num].name = data;
-						rooms[room.room].players[room.player.num].img = imgurl;
-						rooms[room.room].shapes[room.player.imgid].img = imgurl;
-						io.sockets.in(room.room).emit('player change', {type: 'change', players: rooms[room.room].players});
-						io.sockets.in(room.room).emit('shape move', {type: 'image change', img: imgurl, id: rooms[room.room].players[room.player.num].imgid});
-					}
+				
+				req.on('error', function(e) {
+					console.log('error: ' + e.message);
 				});
-			});
-			
-			req.on('error', function(e) {
-				console.log('error: ' + e.message);
-			});
-			
-			req.end();
+				
+				req.end();
+			}
+			catch(err) {
+				console.log('error has been logged');
+			}
 		});
 	});
 	socket.on('request drawings', function(data) {

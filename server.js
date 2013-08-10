@@ -294,9 +294,9 @@ io.on('connection', function(socket) {
 	});
 	socket.on('steam info', function(data) {
 		console.log('got into steam info befoer html');
-		socket.get('room', function(err, room) {
+		try {
+			socket.get('room', function(err, room) {
 			var http = require('http');
-			try {
 				var options = {
 					hostname: 'steamcommunity.com',
 					port: 80,
@@ -334,11 +334,11 @@ io.on('connection', function(socket) {
 				});
 				
 				req.end();
-			}
-			catch(err) {
-				console.log('error has been logged');
-			}
-		});
+			});
+		}
+		catch(err) {
+			console.log('error in steam info: ' + err);
+		}
 	});
 	socket.on('request drawings', function(data) {
 		try{

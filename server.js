@@ -5,7 +5,7 @@ var express = require('express'),
 	path = require('path');
 
 
-var port = process.env.PORT || 80;	
+var port = process.env.PORT || 8080;	
 server.listen(port);
 
 /* io.configure(function () { 
@@ -244,12 +244,12 @@ io.on('connection', function(socket) {
 		socket.get('room', function(err, room) {
 			var http = require('http');
 			var options = {
-				hostname: 'www.steamcommunity.com/id/',
+				hostname: 'steamcommunity.com',
 				port: 80,
-				path: '/' + data,
+				path: '/id/' + data,
 				method: 'GET'
 			};
-			var req = http.get(options, function(resp){
+			var req = http.request(options, function(resp){
 				console.log('got into steam info during html');
 				var html = '';
 				resp.on('data', function(chunk) {

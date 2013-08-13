@@ -47,6 +47,7 @@ app.post('/test', function(req, res) {
 	console.log('got make_room post');
 	console.log(req.body);
 	var map = req.body.map;
+	console.log('map is: ' + map);
 	var roomname;
 	do{
 		var crypto = require('crypto'),
@@ -93,6 +94,12 @@ function getMap(map) {
 			break;
 		case 'vertigo':
 			return 'imgs/de_vertigo_radar.png';
+			break;
+		case 'nuke':
+			return 'imgs/de_nuke_radar_spectate.png';
+			break;
+		case 'mirage':
+			return 'imgs/de_mirage_radar_spectate.png';
 			break;
 		default:
 			return 'imgs/de_dust2_radar_spectate_default.png';
